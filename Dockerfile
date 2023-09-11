@@ -1,6 +1,7 @@
 FROM mobiledevops/android-sdk-image:33.0.2
 
-WORKDIR /builder
-COPY . /builder
-CMD /builder/gradlew build
-RUN /builder/gradlew run
+USER root
+WORKDIR $HOME/builder
+COPY . $HOME/builder
+RUN ~/builder/gradlew build
+CMD ~/builder/gradlew run

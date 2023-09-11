@@ -15,11 +15,6 @@ dependencies {
     implementation("com.google.code.gson", "gson", "2.10.1")
 }
 
-
-kotlin {
-    jvmToolchain(8)
-}
-
 application {
     mainClass.set("ru.shtp.androidbuilder.MainKt")
 }
