@@ -1,4 +1,4 @@
-package ru.shtp.androidbuilder
+package ru.shtp.androidbuilder.dto
 
 import com.google.gson.annotations.SerializedName
 
