@@ -3,4 +3,4 @@ services:
   builder:
     build: .
     volumes:
-      - ./apk:/builder/output
+      - ./workdir:/builder/workdir
