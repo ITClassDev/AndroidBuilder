@@ -2,7 +2,6 @@ package ru.shtp.androidbuilder
 
 import org.eclipse.jgit.api.Git
 import ru.shtp.androidbuilder.Data.androidRepo
-import ru.shtp.androidbuilder.Data.applicationFolder
 import ru.shtp.androidbuilder.Data.releaseApk
 import ru.shtp.androidbuilder.Data.releaseFileManifest
 import ru.shtp.androidbuilder.Data.releaseInfo
@@ -15,16 +14,14 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
+
 fun main() {
     val androidRepoFile = File(androidRepo)
     androidRepoFile.parentFile.mkdirs()
     val git = if (androidRepoFile.exists()) {
         Git.open(androidRepoFile)
     } else {
-        Git.cloneRepository()
-            .setURI(uri)
-            .setDirectory(androidRepoFile)
-            .call()
+        Git.cloneRepository().setURI(uri).setDirectory(androidRepoFile).call()
     }
     while (true) {
         println("Pull check")
@@ -33,24 +30,21 @@ fun main() {
         if (Manager.appState.checkedVersion != name) {
             println("New update available, building..")
 
-            if (File(Data.outputFolder).exists())
-                File(Data.outputFolder).deleteRecursively()
+            if (File(Data.outputFolder).exists()) File(Data.outputFolder).deleteRecursively()
             File(Data.outputFolder).mkdirs()
 
             buildApplication()
 
             val (versionName, versionCode) = FileReader(versionInfo).use {
-                Pair(it.readLines()[0], it.readLines()[1].toInt())
+                val readLines = it.readLines()
+                Pair(readLines[0], readLines[1].toInt())
             }
             val releaseInfo = FileReader(releaseInfo).use { it.readText() }
 
             FileWriter(tempReleaseManifest).use {
                 Manager.gson.toJson(
                     ReleaseManifest(
-                        releaseInfo,
-                        System.currentTimeMillis(),
-                        versionName,
-                        versionCode
+                        releaseInfo, System.currentTimeMillis(), versionName, versionCode
                     ), it
                 )
             }
@@ -68,8 +62,19 @@ fun main() {
 
 fun buildApplication(): Int {
     println("Start gradlew build")
-    val exec = Runtime.getRuntime().exec("sh -s \"cd $applicationFolder && ./gradlew build\"")
-    val waitFor = exec.waitFor()
+
+    ProcessBuilder("chmod", "+x", "./gradlew")
+        .directory(File(androidRepo))
+        .redirectOutput(ProcessBuilder.Redirect.INHERIT).start().waitFor()
+    val process = ProcessBuilder("./gradlew", "build", "-Penv=production")
+        .directory(File(androidRepo))
+        .redirectOutput(ProcessBuilder.Redirect.INHERIT).start()
+    val waitFor = process.waitFor()
+    ProcessBuilder("./gradlew", "generateVersions")
+        .directory(File(androidRepo))
+        .redirectOutput(ProcessBuilder.Redirect.INHERIT).start().waitFor()
+
     println("Finished build with code $waitFor")
+
     return waitFor
 }
