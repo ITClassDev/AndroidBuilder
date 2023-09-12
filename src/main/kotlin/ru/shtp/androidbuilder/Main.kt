@@ -27,10 +27,11 @@ fun main() {
             .call()
     }
     while (true) {
+        println("Pull check")
         git.pull()
         val name = git.log().setMaxCount(1).call().iterator().next().name
         if (Manager.appState.checkedVersion != name) {
-            println("Building")
+            println("New update available, building..")
 
             if (File(Data.outputFolder).exists())
                 File(Data.outputFolder).deleteRecursively()
@@ -53,17 +54,22 @@ fun main() {
                     ), it
                 )
             }
-
+            println("Writed release manifwst")
             File(tempReleaseManifest).copyTo(File(releaseFileManifest), true)
             File(tempDebugApk).copyTo(File(releaseApk), true)
-
+            println("Copied files")
             Manager.appState.checkedVersion = name
             Manager.saveAppState()
         }
+        println("Sleeping 10 minutes")
         Thread.sleep(600000)
     }
 }
 
-fun buildApplication() {
-    Runtime.getRuntime().exec("sh -s \"cd $applicationFolder && ./gradlew build\"")
+fun buildApplication(): Int {
+    println("Start gradlew build")
+    val exec = Runtime.getRuntime().exec("sh -s \"cd $applicationFolder && ./gradlew build\"")
+    val waitFor = exec.waitFor()
+    println("Finished build with code $waitFor")
+    return waitFor
 }
