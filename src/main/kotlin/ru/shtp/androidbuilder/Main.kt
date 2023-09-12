@@ -58,6 +58,7 @@ fun main() {
             File(tempDebugApk).copyTo(File(releaseApk), true)
 
             Manager.appState.checkedVersion = name
+            Manager.saveAppState()
         }
         Thread.sleep(600000)
     }
