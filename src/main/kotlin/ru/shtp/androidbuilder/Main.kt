@@ -17,7 +17,7 @@ import java.io.FileWriter
 
 fun main() {
     val androidRepoFile = File(androidRepo)
-    androidRepoFile.mkdirs()
+    androidRepoFile.parentFile.mkdirs()
     val git = if (androidRepoFile.exists()) {
         Git.open(androidRepoFile)
     } else {
