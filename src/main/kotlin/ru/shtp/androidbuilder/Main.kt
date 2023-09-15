@@ -56,7 +56,7 @@ private fun buildAll(name: String) {
             ), it
         )
     }
-    println("Writed release manifwst")
+    println("Wrote release manifest")
     File(tempReleaseManifest).copyTo(File(releaseFileManifest), true)
     File(tempDebugApk).copyTo(File(releaseApk), true)
     println("Copied files")
@@ -78,7 +78,7 @@ fun buildApk(): Int {
         return waitVersions
     }
 
-    val waitBuild = ProcessBuilder("./gradlew", "build", "--stacktrace")
+    val waitBuild = ProcessBuilder("./gradlew", "build", "--console=plain", "--parallel")
         .directory(File(androidRepo))
         .redirectOutput(ProcessBuilder.Redirect.INHERIT).start().waitFor()
 
