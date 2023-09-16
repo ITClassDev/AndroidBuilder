@@ -9,7 +9,7 @@
 
 ## File structure
 Application in /builder/ folder have only one open volume folder /builder/workdir for the docker, with this structure.
-Files latest.log, state.json, temp folder not important for another components, but you need to store them on a storage fs.
+Files <ins>latest.log, state.json, temp folder</ins> not important for another components, but you need to store them on a storage fs.
 
 The output directory is already needed to transfer the APK file to the backend
 ```
@@ -24,4 +24,3 @@ The output directory is already needed to transfer the APK file to the backend
     ├── release.json   -   Output artefact information
     └── ShTP.apk       -   Built APK file
 ```
-
