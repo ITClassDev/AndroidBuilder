@@ -16,5 +16,7 @@ object Data {
     val versionInfo = "${androidRepo}/app/version.txt"
     val tempDebugApk = "${androidRepo}/app/build/outputs/apk/debug/app-debug.apk"
 
+    val waitMinutes = 5
+
     const val uri = "https://github.com/ITClassDev/Mobile"
 }

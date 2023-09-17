@@ -3,6 +3,7 @@ package ru.shtp.androidbuilder
 import org.apache.commons.io.IOUtils
 import org.apache.log4j.Logger
 import org.eclipse.jgit.api.Git
+import ru.shtp.androidbuilder.Data.waitMinutes
 import ru.shtp.androidbuilder.dto.ReleaseManifest
 import java.io.File
 import java.io.FileReader
@@ -23,16 +24,18 @@ class Builder(private val logger: Logger) {
     private fun loop(git: Git) {
         while (true) {
             logger.info("Pull check")
-            git.pull()
+            git.pull().call()
             val name = git.log().setMaxCount(1).call().iterator().next().name
             if (Manager.appState.checkedVersion != name)
-                buildAll(name)
-            logger.info("Sleeping 10 minutes")
-            Thread.sleep(600000)
+                buildAll()
+            Manager.appState.checkedVersion = name
+            Manager.saveAppState()
+            logger.info("Sleeping $waitMinutes minutes")
+            Thread.sleep(waitMinutes * 60000L)
         }
     }
 
-    private fun buildAll(name: String) {
+    private fun buildAll() {
         logger.info("New update available, building..")
         if (File(Data.outputFolder).exists()) File(Data.outputFolder).deleteRecursively()
         File(Data.outputFolder).mkdirs()
@@ -58,8 +61,6 @@ class Builder(private val logger: Logger) {
         File(Data.tempReleaseManifest).copyTo(File(Data.releaseFileManifest), true)
         File(Data.tempDebugApk).copyTo(File(Data.releaseApk), true)
         logger.info("Copied files")
-        Manager.appState.checkedVersion = name
-        Manager.saveAppState()
     }
 
     private fun buildApk(): Int {
