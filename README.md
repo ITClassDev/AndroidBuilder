@@ -1,4 +1,5 @@
-# Android Builder
+# Android-app Builder
+[🇬🇧 English](/README.md) [🇷🇺 Russian](/README.ru.md)
 
 ## About
 
@@ -23,10 +24,10 @@ Application in /builder/ folder have only one open volume folder /builder/workdi
     └── ShTP.apk       -   Built APK file
 ```
 
-Files <ins>latest.log, state.json, temp folder</ins> not important for another components, but you need to store them on a storage fs.
-The output directory is already needed to transfer the APK file to the backend
+Files <ins>latest.log</ins>, <ins>state.json</ins>, <ins>temp folder</ins> not important for another components, but you need to store them on a storage fs.
+But output directory is needed to transfer the APK file to the backend
 
-#### Release Manifest
+#### Release Manifest `release.json`
 ```
 {
   "change_log": "Perfect update",   # MD Format
@@ -36,7 +37,7 @@ The output directory is already needed to transfer the APK file to the backend
 }
 ```
 
-#### Application State
+#### Application State `state.json`
 This files contains only information about previous build (now last build commit id)
 ```
 {
