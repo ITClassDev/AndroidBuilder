@@ -1,5 +1,6 @@
 package ru.shtp.androidbuilder
 
+import org.apache.commons.io.IOUtils
 import org.apache.log4j.Logger
 import org.eclipse.jgit.api.Git
 import ru.shtp.androidbuilder.dto.ReleaseManifest
@@ -8,7 +9,7 @@ import java.io.FileReader
 import java.io.FileWriter
 
 class Builder(private val logger: Logger) {
-
+    private val loggerStream = LoggingOutputStream(logger)
     fun run() {
         val androidRepoFile = File(Data.androidRepo)
         androidRepoFile.parentFile.mkdirs()
@@ -64,20 +65,31 @@ class Builder(private val logger: Logger) {
     private fun buildApk(): Int {
         logger.info("Start gradlew build")
 
-        ProcessBuilder("chmod", "+x", "./gradlew")
+        val waitChmod = ProcessBuilder("chmod", "+x", "./gradlew")
             .directory(File(Data.androidRepo))
             .redirectOutput(ProcessBuilder.Redirect.INHERIT).start().waitFor()
-        val waitVersions = ProcessBuilder("./gradlew", "generateVersions")
+        if (waitChmod != 0) {
+            logger.info("Chmod gradlew exit code $waitChmod")
+            return waitChmod
+        }
+
+        val versionsProcess = ProcessBuilder("./gradlew", "generateVersions", "--console=plain", "--parallel")
             .directory(File(Data.androidRepo))
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT).start().waitFor()
+            .redirectErrorStream(true)
+            .start()
+        IOUtils.copy(versionsProcess.inputStream, loggerStream)
+        versionsProcess.outputStream
+        val waitVersions = versionsProcess.waitFor()
         if (waitVersions != 0) {
             logger.info("Finished generating versions with code $waitVersions")
             return waitVersions
         }
 
-        val waitBuild = ProcessBuilder("./gradlew", "build", "--console=plain", "--parallel")
+        val buildProcess = ProcessBuilder("./gradlew", "build", "--console=plain", "--parallel", "-Penv=production")
             .directory(File(Data.androidRepo))
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT).start().waitFor()
+            .redirectErrorStream(true).start()
+        IOUtils.copy(buildProcess.inputStream, loggerStream)
+        val waitBuild = buildProcess.waitFor()
 
         logger.info("Finished build with code $waitBuild")
         return waitBuild
