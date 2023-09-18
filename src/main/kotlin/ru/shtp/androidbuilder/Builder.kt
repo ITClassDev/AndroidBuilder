@@ -17,7 +17,7 @@ class Builder(private val logger: Logger) {
         val git = if (androidRepoFile.exists())
             Git.open(androidRepoFile)
         else
-            Git.cloneRepository().setURI(Data.uri).setDirectory(androidRepoFile).call()
+            Git.cloneRepository().setURI(Data.gitRepoUrl).setDirectory(androidRepoFile).call()
         loop(git)
     }
 
@@ -31,24 +31,24 @@ class Builder(private val logger: Logger) {
             Manager.appState.checkedVersion = name
             Manager.saveAppState()
             logger.info("Sleeping $waitMinutes minutes")
-            Thread.sleep(waitMinutes * 60000L)
+            Thread.sleep((waitMinutes * 60000).toLong())
         }
     }
 
     private fun buildAll() {
         logger.info("New update available, building..")
-        if (File(Data.outputFolder).exists()) File(Data.outputFolder).deleteRecursively()
-        File(Data.outputFolder).mkdirs()
+        if (File("workdir/output").exists()) File("workdir/output").deleteRecursively()
+        File("workdir/output").mkdirs()
 
         val buildApplication = buildApk()
         if (buildApplication != 0)
             return
 
-        val (versionName, versionCode) = FileReader(Data.versionInfo).use {
+        val (versionName, versionCode) = FileReader(Data.appVersionJson).use {
             val readLines = it.readLines()
             Pair(readLines[0], readLines[1].toInt())
         }
-        val releaseInfo = FileReader(Data.releaseInfo).use { it.readText() }
+        val releaseInfo = FileReader(Data.appReleaseMd).use { it.readText() }
 
         FileWriter(Data.tempReleaseManifest).use {
             Manager.gson.toJson(
@@ -59,7 +59,7 @@ class Builder(private val logger: Logger) {
         }
         logger.info("Wrote release manifest")
         File(Data.tempReleaseManifest).copyTo(File(Data.releaseFileManifest), true)
-        File(Data.tempDebugApk).copyTo(File(Data.releaseApk), true)
+        File(Data.appDebugApk).copyTo(File(Data.releaseApk), true)
         logger.info("Copied files")
     }
 

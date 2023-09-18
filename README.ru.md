@@ -45,3 +45,19 @@
   "checked_version": "e7ff3af6a430b49160cc0ba6f2a5631d7f192600"
 }
 ```
+
+## Переменные среды
+
+`VOLUME_FOLDER` (По умолчанию: workdir/state.json)
+
+`OUT_RELEASE_JSON` (По умолчанию: workdir/output/release.json)
+
+`OUT_RELEASE_APK` (По умолчанию: workdir/output/ShTP.apk)
+
+`TEMP_RELEASE_JSON` (По умолчанию: workdir/temp/manifest.json)
+
+`TEMP_RELEASE_APP` (По умолчанию: workdir/temp/application)
+
+`WAIT_MINUTES` (По умолчанию: 5)
+
+`GIT_REPO` (По умолчанию: https://github.com/ITClassDev/Mobile)

@@ -11,20 +11,20 @@ object Manager {
     val appState: AppStateData = loadAppState()
 
     private fun loadAppState():AppStateData {
-        val file = File(Data.dataFile)
+        val file = File(Data.stateFile)
         file.parentFile.mkdirs()
         return if (!file.exists()) {
-            FileWriter(Data.dataFile).use {
+            FileWriter(Data.stateFile).use {
                 val newValue = AppStateData("")
                 gson.toJson(newValue, it)
                 newValue
             }
-        } else FileReader(Data.dataFile).use {
+        } else FileReader(Data.stateFile).use {
             gson.fromJson(it, AppStateData::class.java)
         }
     }
 
-    fun saveAppState() = FileWriter(Data.dataFile).use { gson.toJson(appState, it) }
+    fun saveAppState() = FileWriter(Data.stateFile).use { gson.toJson(appState, it) }
 
 
 

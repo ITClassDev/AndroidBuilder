@@ -44,3 +44,19 @@ This files contains only information about previous build (now last build commit
   "checked_version": "e7ff3af6a430b49160cc0ba6f2a5631d7f192600"
 }
 ```
+
+## Environment variables
+
+`VOLUME_FOLDER` (Default: workdir/state.json)
+
+`OUT_RELEASE_JSON` (Default: workdir/output/release.json)
+
+`OUT_RELEASE_APK` (Default: workdir/output/ShTP.apk)
+
+`TEMP_RELEASE_JSON` (Default: workdir/temp/manifest.json)
+
+`TEMP_RELEASE_APP` (Default: workdir/temp/application)
+
+`WAIT_MINUTES` (Default: 5)
+
+`GIT_REPO` (Default: https://github.com/ITClassDev/Mobile)
