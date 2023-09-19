@@ -43,7 +43,7 @@ But output directory is needed to transfer the APK file to the backend
 
 #### Application State `state.json`
 This files contains only information about previous build (now last build commit id)
-```
+```json5
 {
   "checked_version": "e7ff3af6a430b49160cc0ba6f2a5631d7f192600"
 }
