@@ -1,15 +1,18 @@
 package ru.shtp.androidbuilder
 
+import com.google.gson.Gson
 import org.apache.commons.io.IOUtils
 import org.apache.log4j.Logger
 import org.eclipse.jgit.api.Git
 import ru.shtp.androidbuilder.Data.waitMinutes
+import ru.shtp.androidbuilder.dto.ChangelogRepoJson
 import ru.shtp.androidbuilder.dto.ReleaseManifest
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
 class Builder(private val logger: Logger) {
+    private val gson = Gson()
     private val loggerStream = LoggingOutputStream(logger)
     fun run() {
         val androidRepoFile = File(Data.androidRepo)
@@ -48,7 +51,10 @@ class Builder(private val logger: Logger) {
             val readLines = it.readLines()
             Pair(readLines[0], readLines[1].toInt())
         }
-        val releaseInfo = FileReader(Data.appReleaseMd).use { it.readText() }
+
+        val releaseInfo = FileReader(Data.appReleaseMdsJson).use {
+            gson.fromJson(it, ChangelogRepoJson::class.java)
+        }
 
         FileWriter(Data.tempReleaseManifest).use {
             Manager.gson.toJson(

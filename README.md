@@ -27,13 +27,17 @@ Application in /builder/ folder have only one open volume folder /builder/workdi
 Files <ins>latest.log</ins>, <ins>state.json</ins>, <ins>temp folder</ins> not important for another components, but you need to store them on a storage fs.
 But output directory is needed to transfer the APK file to the backend
 
+
 #### Release Manifest `release.json`
-```
+```json5
 {
-  "change_log": "Perfect update",   # MD Format
-  "release_date": 1694864027785,    # Epoch time in millis 
-  "version_name": "0.3.7",          # User-friendly public version
-  "version_tag": 45                 # Hidden version code
+  "change_log": {                   // MD Format
+    "en": "**Perfect** _update_",
+    "ru": "~~Отличное~~ обновление"
+  },
+  "release_date": 1694864027785,    // Epoch time in millis 
+  "version_name": "0.3.7",          // User-friendly public version
+  "version_tag": 45                 // Hidden version code
 }
 ```
 

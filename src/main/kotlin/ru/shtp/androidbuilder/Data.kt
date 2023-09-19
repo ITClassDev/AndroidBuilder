@@ -13,7 +13,7 @@ object Data {
 
     val waitMinutes: Double = getenv.getOrDefault("WAIT_MINUTES", "5").toDouble()
 
-    val appReleaseMd = "${androidRepo}/release.md"
+    val appReleaseMdsJson = "${androidRepo}/release.json"
     val appVersionJson = "${androidRepo}/app/version.txt"
     val appDebugApk = "${androidRepo}/app/build/outputs/apk/debug/app-debug.apk"
 

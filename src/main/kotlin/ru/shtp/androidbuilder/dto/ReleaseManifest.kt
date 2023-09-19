@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ReleaseManifest(
     @SerializedName("change_log")
-    val releaseUpdateNotes: String,
+    val releaseUpdateNotes: Map<String, String>,
     @SerializedName("release_date")
     val releaseEpochDate: Long,
     @SerializedName("version_name")
